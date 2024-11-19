@@ -9,7 +9,7 @@ import router from './router'
 import axios from 'axios';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
-axios.defaults.baseURL = 'https://8080-mineda-springtopicos202-v6q06tntvms.ws-us116.gitpod.io/';
+axios.defaults.baseURL = 'https://8080-laizacristi-springtopic-7020pue7lqc.ws-us116.gitpod.io/';
 
 const app = createApp(App)
 
