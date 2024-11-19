@@ -9,6 +9,7 @@
             <th>Mensagem</th>
             <th>Detalhe</th>
             <th>Nível</th>
+            <th>Situação</th> <!-- Nova coluna Situação -->
           </tr>
         </thead>
         <tbody>
@@ -16,6 +17,10 @@
             <td>{{ alerta.mensagem }}</td>
             <td>{{ alerta.detalhe }}</td>
             <td>{{ alerta.nivel }}</td>
+            <td>
+              <!-- Lógica condicional para determinar a Situação -->
+              {{ alerta.nivel >= 3 || alerta.nivel ? 'Crítica' : 'Controlada' }}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -84,7 +89,7 @@
   });
   const filtros = ref({ dataHora: '', mensagem: '' });
   const exibeMensagem = ref(false);
-  const erroCadastro = ref(false); 
+  const erroCadastro = ref(false);
   
   // Função para buscar alertas
   const buscarAlertas = async () => {
@@ -117,36 +122,32 @@
   
   // Função para cadastrar alerta
   const cadastrarAlerta = async () => {
+    if (
+      !novoAlerta.value.mensagem ||
+      !novoAlerta.value.detalhe ||
+      !novoAlerta.value.dataHoraGeracao ||
+      !novoAlerta.value.dataHoraVerificacao ||
+      novoAlerta.value.nivel === null
+    ) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
   
-  if (
-    !novoAlerta.value.mensagem ||
-    !novoAlerta.value.detalhe ||
-    !novoAlerta.value.dataHoraGeracao ||
-    !novoAlerta.value.dataHoraVerificacao ||
-    novoAlerta.value.nivel === null
-  ) {
-    
-    alert('Por favor, preencha todos os campos obrigatórios.');
-    return;
-  }
-
-  try {
-    const response = await axios.post('/alerta', novoAlerta.value);
-    alertas.value.push(response.data);
-
-   
-    novoAlerta.value = {
-      mensagem: '',
-      detalhe: '',
-      dataHoraGeracao: '',
-      dataHoraVerificacao: '',
-      nivel: null,
-    };
-  } catch (error) {
-    console.error('Erro ao cadastrar alerta:', error);
-  }
-};
-
+    try {
+      const response = await axios.post('/alerta', novoAlerta.value);
+      alertas.value.push(response.data);
+  
+      novoAlerta.value = {
+        mensagem: '',
+        detalhe: '',
+        dataHoraGeracao: '',
+        dataHoraVerificacao: '',
+        nivel: null,
+      };
+    } catch (error) {
+      console.error('Erro ao cadastrar alerta:', error);
+    }
+  };
   
   // Função para carregar os alertas
   const carregarAlertas = async () => {
@@ -163,7 +164,6 @@
   </script>
   
   <style scoped>
-  /* Estilos existentes */
   .error-message {
     color: red;
     font-weight: bold;
